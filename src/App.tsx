@@ -1,7 +1,6 @@
-import "./App.css";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { QueryClientProvider } from "react-query";
-import { queryClient } from "@/lib/api.ts";
+import { queryClient } from "@/lib/client";
 import { RouterProvider } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster.tsx";
 import { router } from "@/routes";
