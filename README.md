@@ -1,5 +1,13 @@
 # React + TypeScript + Vite
 
+## Build
+
+`docker build . -t listwibuku-spa-service`
+
+## Run the container
+
+`docker run -d -p 8080:8080 listwibuku-spa-service`
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
