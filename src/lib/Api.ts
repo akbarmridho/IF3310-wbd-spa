@@ -52,6 +52,12 @@ export type ApiRegisterError = ApiValidationSingleError | ApiValidationError;
 
 export type ApiLogoutData = any;
 
+export type ApiChangePasswordData = any;
+
+export type ApiChangePasswordError =
+  | ApiValidationSingleError
+  | ApiValidationError;
+
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -296,21 +302,53 @@ export class Api<
         ...params,
       }),
   };
-  profile = {
+  logout = {
     /**
      * No description
      *
      * @tags auth
      * @name Logout
      * @summary Logout
-     * @request POST:/profile/logout
+     * @request POST:/logout
      * @secure
      */
     logout: (params: RequestParams = {}) =>
       this.request<ApiLogoutData, any>({
-        path: `/profile/logout`,
+        path: `/logout`,
         method: "POST",
         secure: true,
+        ...params,
+      }),
+  };
+  profile = {
+    /**
+     * No description
+     *
+     * @tags profile
+     * @name ChangePassword
+     * @summary Change user password
+     * @request PUT:/profile/password
+     */
+    changePassword: (
+      data: {
+        /**
+         * Minimum 8 chars
+         * @example "password123"
+         */
+        oldPassword: string;
+        /**
+         * Minimum 8 chars
+         * @example "password123"
+         */
+        newPassword: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ApiChangePasswordData, ApiChangePasswordError>({
+        path: `/profile/password`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
   };

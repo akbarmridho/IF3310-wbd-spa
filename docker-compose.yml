@@ -1,0 +1,6 @@
+version: '3.8'
+services:
+  listwibuku-spa-service:
+    build: .
+    ports:
+      - '3002:8080'
