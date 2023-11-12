@@ -3,6 +3,7 @@ import { authRoutes } from "@/routes/auth";
 import Home from "@/routes/Home.tsx";
 import { client } from "@/lib/client.ts";
 import { Layout } from "@/components/Layout.tsx";
+import Profile from "@/routes/Profile.tsx";
 
 export const router = createBrowserRouter([
   // unprotected routes
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
       },
     ],
   },

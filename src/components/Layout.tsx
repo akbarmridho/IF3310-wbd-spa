@@ -69,7 +69,7 @@ export function Layout() {
           <ProfileContext.Provider value={user}>
             <main className={"absolute w-full min-h-screen bg-gray-100"}>
               <Header user={user} />
-              <div className={"mx-auto max-w-screen-lg px-2 lg:px-0"}>
+              <div className={"mx-auto max-w-screen-lg px-2 lg:px-0 pt-2"}>
                 <Outlet />
               </div>
             </main>
