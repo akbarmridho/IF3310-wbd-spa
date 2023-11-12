@@ -24,9 +24,13 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 const formSchema = z.object({
   username: z.string().min(5).max(20),
   password: z.string().min(8).max(127),
+  name: z.string().min(2).max(127),
 });
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+export function UserRegistrationForm({
+  className,
+  ...props
+}: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fieldError, setFieldError] = useState<string | null>(null);
 
@@ -37,6 +41,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     defaultValues: {
       username: "",
       password: "",
+      name: "",
     },
   });
 
@@ -44,16 +49,17 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     setIsLoading(true);
 
     try {
-      await client.login.login({
+      await client.register.register({
         username: values.username,
         password: values.password,
+        name: values.name,
       });
 
       toast({
-        description: "Login success",
+        description: "Register success",
       });
 
-      navigate("/");
+      navigate("/login");
     } catch (e) {
       if (isAxiosError<ApiValidationSingleError>(e)) {
         setIsLoading(false);
@@ -73,6 +79,19 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     <div className={cn("grid gap-6", className)} {...props}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
+          <FormField
+            control={form.control}
+            name={"name"}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input placeholder={"name"} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name={"username"}
@@ -112,7 +131,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             disabled={isLoading}
             className={"mt-6 w-full"}
           >
-            Login
+            Register
           </Button>
         </form>
       </Form>
