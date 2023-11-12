@@ -36,6 +36,7 @@ export interface ApiUserInstance {
   id: number;
   /** Should be unique. Only contains lowercase, numbers, and symbol . and _ */
   username: string;
+  name: string;
   /** @format date-time */
   createdAt: string;
 }
@@ -57,6 +58,10 @@ export type ApiChangePasswordData = any;
 export type ApiChangePasswordError =
   | ApiValidationSingleError
   | ApiValidationError;
+
+export interface ApiProfileData {
+  data: ApiUserInstance;
+}
 
 import type {
   AxiosInstance,
@@ -349,6 +354,21 @@ export class Api<
         method: "PUT",
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags profile
+     * @name Profile
+     * @summary Get profile
+     * @request GET:/profile
+     */
+    profile: (params: RequestParams = {}) =>
+      this.request<ApiProfileData, any>({
+        path: `/profile`,
+        method: "GET",
         ...params,
       }),
   };
