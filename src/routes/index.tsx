@@ -4,6 +4,9 @@ import Home from "@/routes/Home.tsx";
 import { client } from "@/lib/client.ts";
 import { Layout } from "@/components/Layout.tsx";
 import Profile from "@/routes/Profile.tsx";
+import { AnimeNew } from "@/routes/AnimeNew.tsx";
+import { AnimeEdit } from "@/routes/AnimeEdit.tsx";
+import { AnimeView } from "@/routes/AnimeView.tsx";
 
 export const router = createBrowserRouter([
   // unprotected routes
@@ -24,6 +27,18 @@ export const router = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile />,
+      },
+      {
+        path: "/anime/form",
+        element: <AnimeNew />,
+      },
+      {
+        path: "/anime/form/:id",
+        element: <AnimeEdit />,
+      },
+      {
+        path: "/anime/view/:id",
+        element: <AnimeView />,
       },
     ],
   },
