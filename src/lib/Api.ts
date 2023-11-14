@@ -41,6 +41,27 @@ export interface ApiUserInstance {
   createdAt: string;
 }
 
+export interface ApiAnimeInstance {
+  id: string;
+  title: string;
+  status: "upcoming, airing, aired";
+  totalEpisodes?: number;
+  airedEpisodes?: number;
+  broadcastInformation?: string;
+  /** @format date-time */
+  createdAt: string;
+}
+
+export interface ApiEpisodeInstance {
+  animeId: string;
+  title: string;
+  episodeNumber: number;
+  totalViewers: number;
+  filename: string;
+  /** @format date-time */
+  createdAt: string;
+}
+
 export type ApiLoginData = any;
 
 export type ApiLoginError = ApiValidationError | ApiValidationSingleError;
@@ -62,6 +83,72 @@ export type ApiChangePasswordError =
 export interface ApiProfileData {
   data: ApiUserInstance;
 }
+
+export interface ApiGetAllAnimeData {
+  data: ApiAnimeInstance[];
+}
+
+export interface ApiCreateAnimeData {
+  data: ApiAnimeInstance;
+}
+
+export type ApiCreateAnimeError = ApiValidationSingleError | ApiValidationError;
+
+export interface ApiGetAnimeData {
+  data: ApiAnimeInstance;
+}
+
+export type ApiGetAnimeError = ApiValidationSingleError | ApiValidationError;
+
+export interface ApiUpdateAnimeData {
+  data: ApiAnimeInstance;
+}
+
+export type ApiUpdateAnimeError = ApiValidationSingleError | ApiValidationError;
+
+export interface ApiDeleteAnimeData {
+  data: ApiAnimeInstance;
+}
+
+export type ApiDeleteAnimeError = ApiValidationSingleError | ApiValidationError;
+
+export interface ApiGetAllEpisodesData {
+  data: ApiEpisodeInstance[];
+}
+
+export type ApiGetAllEpisodesError =
+  | ApiValidationSingleError
+  | ApiValidationError;
+
+export interface ApiCreateEpisodeData {
+  data: ApiEpisodeInstance;
+}
+
+export type ApiCreateEpisodeError =
+  | ApiValidationSingleError
+  | ApiValidationError;
+
+export interface ApiGetEpisodeData {
+  data: ApiEpisodeInstance;
+}
+
+export type ApiGetEpisodeError = ApiValidationSingleError | ApiValidationError;
+
+export interface ApiUpdateEpisodeData {
+  data: ApiEpisodeInstance;
+}
+
+export type ApiUpdateEpisodeError =
+  | ApiValidationSingleError
+  | ApiValidationError;
+
+export interface ApiDeleteEpisodeData {
+  data: ApiEpisodeInstance;
+}
+
+export type ApiDeleteEpisodeError =
+  | ApiValidationSingleError
+  | ApiValidationError;
 
 import type {
   AxiosInstance,
@@ -369,6 +456,219 @@ export class Api<
       this.request<ApiProfileData, any>({
         path: `/profile`,
         method: "GET",
+        ...params,
+      }),
+  };
+  anime = {
+    /**
+     * No description
+     *
+     * @tags anime
+     * @name GetAllAnime
+     * @summary Get all anime
+     * @request GET:/anime
+     * @secure
+     */
+    getAllAnime: (params: RequestParams = {}) =>
+      this.request<ApiGetAllAnimeData, any>({
+        path: `/anime`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags anime
+     * @name CreateAnime
+     * @summary Add anime
+     * @request POST:/anime
+     */
+    createAnime: (
+      data: {
+        id: string;
+        status: "upcoming" | "airing" | "aired";
+        totalEpisodes?: number;
+        broadcastInformation?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ApiCreateAnimeData, ApiCreateAnimeError>({
+        path: `/anime`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags anime
+     * @name GetAnime
+     * @summary Get anime by id
+     * @request GET:/anime/{id}
+     * @secure
+     */
+    getAnime: (id: string, params: RequestParams = {}) =>
+      this.request<ApiGetAnimeData, ApiGetAnimeError>({
+        path: `/anime/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags anime
+     * @name UpdateAnime
+     * @summary Update anime
+     * @request PUT:/anime/{id}
+     */
+    updateAnime: (
+      id: string,
+      data: {
+        status: "upcoming" | "airing" | "aired";
+        totalEpisodes?: number;
+        broadcastInformation?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ApiUpdateAnimeData, ApiUpdateAnimeError>({
+        path: `/anime/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags anime
+     * @name DeleteAnime
+     * @summary Delete anime by id
+     * @request DELETE:/anime/{id}
+     * @secure
+     */
+    deleteAnime: (id: string, params: RequestParams = {}) =>
+      this.request<ApiDeleteAnimeData, ApiDeleteAnimeError>({
+        path: `/anime/${id}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags episodes
+     * @name GetAllEpisodes
+     * @summary Get episodes of an anime
+     * @request GET:/anime/{id}/episodes
+     * @secure
+     */
+    getAllEpisodes: (id: string, params: RequestParams = {}) =>
+      this.request<ApiGetAllEpisodesData, ApiGetAllEpisodesError>({
+        path: `/anime/${id}/episodes`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags episodes
+     * @name CreateEpisode
+     * @summary Add episode to an anime
+     * @request POST:/anime/{id}/episodes
+     */
+    createEpisode: (
+      id: string,
+      data: {
+        animeId: string;
+        title: string;
+        episodeNumber: number;
+        filename: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ApiCreateEpisodeData, ApiCreateEpisodeError>({
+        path: `/anime/${id}/episodes`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags episodes
+     * @name GetEpisode
+     * @summary Get an episode of an anime
+     * @request GET:/anime/{id}/episodes/{episode_number}
+     * @secure
+     */
+    getEpisode: (
+      id: string,
+      episodeNumber: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<ApiGetEpisodeData, ApiGetEpisodeError>({
+        path: `/anime/${id}/episodes/${episodeNumber}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags episodes
+     * @name UpdateEpisode
+     * @summary Update anime
+     * @request PUT:/anime/{id}/episodes/{episode_number}
+     */
+    updateEpisode: (
+      id: string,
+      episodeNumber: number,
+      data: {
+        title: string;
+        episodeNumber: number;
+        filename: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ApiUpdateEpisodeData, ApiUpdateEpisodeError>({
+        path: `/anime/${id}/episodes/${episodeNumber}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags episodes
+     * @name DeleteEpisode
+     * @summary Delete anime by id
+     * @request DELETE:/anime/{id}/episodes/{episode_number}
+     * @secure
+     */
+    deleteEpisode: (
+      id: string,
+      episodeNumber: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<ApiDeleteEpisodeData, ApiDeleteEpisodeError>({
+        path: `/anime/${id}/episodes/${episodeNumber}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
   };
