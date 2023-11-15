@@ -44,7 +44,7 @@ export interface ApiUserInstance {
 export interface ApiAnimeInstance {
   id: string;
   title: string;
-  status: "upcoming, airing, aired";
+  status: "upcoming" | "airing" | "aired";
   totalEpisodes?: number;
   airedEpisodes?: number;
   broadcastInformation?: string;

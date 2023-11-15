@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { isAxiosError } from "axios";
-import { ApiValidationSingleError } from "@/lib/Api.ts";
+import { ApiValidationError, ApiValidationSingleError } from "@/lib/Api.ts";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast.ts";
 import { Textarea } from "@/components/ui/textarea.tsx";
@@ -25,21 +26,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.tsx";
+import { client } from "@/lib/client.ts";
 
 interface AnimeNewFormProps extends React.HTMLAttributes<HTMLDivElement> {
   anime?: Anime;
 }
 
 const formSchema = z.object({
+  id: z
+    .string()
+    .regex(
+      new RegExp(/^[a-z0-9-]+$/),
+      "Id only could have lowercase and hypens",
+    ),
   title: z.string().min(2).max(255),
   broadcastInformation: z.string().optional(),
-  totalEpisodes: z.number().int().min(1),
-  status: z.enum(["upcoming", "airing", "aired"]).optional(),
+  totalEpisodes: z.number().int().min(1).optional(),
+  status: z.enum(["upcoming", "airing", "aired"]),
 });
 
-interface Anime extends z.infer<typeof formSchema> {
-  id: string;
-}
+export interface Anime extends z.infer<typeof formSchema> {}
 
 export function AnimeForm({ className, anime, ...props }: AnimeNewFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -49,7 +55,7 @@ export function AnimeForm({ className, anime, ...props }: AnimeNewFormProps) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: anime || { title: "" },
+    defaultValues: anime || { title: "", id: "" },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -57,16 +63,14 @@ export function AnimeForm({ className, anime, ...props }: AnimeNewFormProps) {
 
     try {
       if (anime) {
-        // todo implement this
-        void values;
-        // is edit anime
+        await client.anime.updateAnime(anime.id, { ...values });
+
         toast({
           description: "Anime updated",
         });
       } else {
-        // todo implement this
-        void values;
-        // is new anime
+        await client.anime.createAnime(values);
+
         toast({
           description: "Anime Created",
         });
@@ -74,14 +78,27 @@ export function AnimeForm({ className, anime, ...props }: AnimeNewFormProps) {
 
       navigate("/");
     } catch (e) {
-      if (isAxiosError<ApiValidationSingleError>(e)) {
+      if (isAxiosError<ApiValidationSingleError | ApiValidationError>(e)) {
         setIsLoading(false);
 
         if (e.response && e.response.status === 400) {
-          const message = e.response.data.message;
+          if ("message" in e.response.data) {
+            const message = e.response.data.message;
 
-          if (message) {
-            setFieldError(message);
+            if (message) {
+              setFieldError(message);
+            }
+          } else if ("messages" in e.response.data) {
+            const messages = e.response.data.messages;
+
+            messages.forEach((val) => {
+              if (val.field && val.message) {
+                form.setError(val.field as keyof Anime, {
+                  type: "custom",
+                  message: val.message,
+                });
+              }
+            });
           }
         }
       }
@@ -92,6 +109,25 @@ export function AnimeForm({ className, anime, ...props }: AnimeNewFormProps) {
     <div className={cn("grid gap-6", className)} {...props}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
+          {!anime && (
+            <FormField
+              control={form.control}
+              name={"id"}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Anime Id</FormLabel>
+                  <FormControl>
+                    <Input placeholder={"Id"} {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Input your anime identifier. Only lowercase and - symbol are
+                    allowed
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <FormField
             control={form.control}
             name={"title"}
@@ -121,19 +157,23 @@ export function AnimeForm({ className, anime, ...props }: AnimeNewFormProps) {
           <FormField
             control={form.control}
             name={"totalEpisodes"}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Total Episodes</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={"Total Episde"}
-                    type={"number"}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field: props }) => {
+              const { onChange, ...fields } = props;
+              return (
+                <FormItem>
+                  <FormLabel>Total Episodes</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={"Total Episode"}
+                      type={"number"}
+                      {...fields}
+                      onChange={(e) => onChange?.(+e.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
 
           <FormField
