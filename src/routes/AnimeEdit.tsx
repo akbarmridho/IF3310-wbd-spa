@@ -11,7 +11,7 @@ export function AnimeEdit() {
     client.anime.getAnime(id).then((response) => {
       setAnime(response.data.data);
     });
-  }, []);
+  });
 
   return (
     <>

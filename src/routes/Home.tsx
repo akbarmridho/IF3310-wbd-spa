@@ -1,3 +1,4 @@
+import { AnimeList } from "@/components/AnimeList";
 import { Button } from "@/components/ui/button.tsx";
 import { Link } from "react-router-dom";
 
@@ -14,7 +15,7 @@ export default function Home() {
           </Button>
         </div>
       </div>
-      <div>Ini list anime</div>
+      <AnimeList />
     </div>
   );
 }

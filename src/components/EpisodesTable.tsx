@@ -2,6 +2,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { EpisodeDataTable } from "@/components/EpisodeDataTable.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { client } from "@/lib/client";
 
 interface EpisodeTableProps {
   id: string;
@@ -51,26 +53,13 @@ const columns: ColumnDef<Episode>[] = [
 ];
 
 export function EpisodesTable({ id }: EpisodeTableProps) {
-  const data: Episode[] = [
-    {
-      title: "Beyond Journey End",
-      totalViewers: 1000,
-      episodeNumber: 1,
-      animeId: id,
-    },
-    {
-      title: "Beyond Journey End",
-      totalViewers: 1250,
-      episodeNumber: 2,
-      animeId: id,
-    },
-    {
-      title: "Beyond Journey End",
-      totalViewers: 2000,
-      episodeNumber: 3,
-      animeId: id,
-    },
-  ];
+  const [episodeData, setEpisodeData] = useState<Episode[]>([]);
 
-  return <EpisodeDataTable columns={columns} data={data} />;
+  useEffect(() => {
+    client.anime.getAllEpisodes(id).then((response) => {
+      setEpisodeData(response.data.data);
+    });
+  });
+
+  return <EpisodeDataTable columns={columns} data={episodeData} />;
 }
