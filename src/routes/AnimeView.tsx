@@ -30,6 +30,9 @@ export function AnimeView() {
           <Button asChild size={"sm"}>
             <Link to={`/anime/form/${id}`}>Edit</Link>
           </Button>
+          <Button asChild size={"sm"} variant={"outline"}>
+            <Link to={`/anime/view/${id}/episodes/new`}>New Episode</Link>
+          </Button>
         </div>
       </div>
       <div className={"grid grid-cols-4 w-full"}>

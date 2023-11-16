@@ -7,6 +7,8 @@ import Profile from "@/routes/Profile.tsx";
 import { AnimeNew } from "@/routes/AnimeNew.tsx";
 import { AnimeEdit } from "@/routes/AnimeEdit.tsx";
 import { AnimeView } from "@/routes/AnimeView.tsx";
+import { EpisodeEdit } from "./EpisodeEdit";
+import { EpisodeNew } from "./EpisodeNew";
 
 export const router = createBrowserRouter([
   // unprotected routes
@@ -39,6 +41,14 @@ export const router = createBrowserRouter([
       {
         path: "/anime/view/:id",
         element: <AnimeView />,
+      },
+      {
+        path: "/anime/view/:id/episodes/:eid/edit",
+        element: <EpisodeEdit />,
+      },
+      {
+        path: "/anime/view/:id/episodes/new",
+        element: <EpisodeNew />,
       },
     ],
   },
