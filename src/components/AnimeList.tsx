@@ -13,7 +13,7 @@ export function AnimeList() {
     client.anime.getAllAnime().then((response) => {
       setBulkAnimeData(response.data.data);
     });
-  });
+  }, []);
 
   const [pageNumber, setPageNumber] = useState<number>(1);
 

@@ -14,7 +14,7 @@ export function AnimeView() {
     client.anime.getAnime(id).then((response) => {
       setAnimeData(response.data.data);
     });
-  });
+  }, [id]);
 
   if (animeData === null) {
     return "Anime data not found";

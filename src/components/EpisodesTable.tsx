@@ -59,7 +59,7 @@ export function EpisodesTable({ id }: EpisodeTableProps) {
     client.anime.getAllEpisodes(id).then((response) => {
       setEpisodeData(response.data.data);
     });
-  });
+  }, []);
 
   return <EpisodeDataTable columns={columns} data={episodeData} />;
 }
