@@ -27,7 +27,7 @@ interface EpisodeNewFormProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const formSchema = z.object({
   title: z.string().min(2).max(255),
-  episodeNumber: z.number().int().min(1),
+  episodeNumber: z.coerce.number().int().min(1),
   filename: z.string().min(2).max(255),
   animeId: z
     .string()
@@ -52,10 +52,11 @@ export function EpisodeForm({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: episode || { title: "", filename: "" },
+    defaultValues: episode || { title: "", filename: "", episodeNumber: 0 },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
     setIsLoading(true);
 
     try {
@@ -69,7 +70,7 @@ export function EpisodeForm({
         });
       } else {
         // FIXME cannot create anime, issue: episodeNumber?
-        await client.anime.createEpisode(animeId, { ...values });
+        await client.anime.createEpisode(animeId, values);
 
         toast({
           description: "Episode Created",
@@ -115,26 +116,19 @@ export function EpisodeForm({
             <FormField
               control={form.control}
               name={"episodeNumber"}
-              render={({ field: props }) => {
-                const { onChange, ...fields } = props;
-                return (
-                  <FormItem>
-                    <FormLabel>Episode Number</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={"Episode Number"}
-                        type={"number"}
-                        {...fields}
-                        onChange={(e) => {
-                          console.log(e.target.value);
-                          onChange?.(+e.target.value);
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Episode Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={"Episode Number"}
+                      type={"number"}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           )}
           <FormField

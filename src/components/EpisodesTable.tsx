@@ -1,9 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { EpisodeDataTable } from "@/components/EpisodeDataTable.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { client } from "@/lib/client";
+import { DeleteDialog } from "./DeleteDialog";
 
 interface EpisodeTableProps {
   id: string;
@@ -32,21 +33,60 @@ const columns: ColumnDef<Episode>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      // todo implement delete dialog
-      return (
-        <div className={"flex gap-x-2"}>
-          <Button asChild size={"sm"}>
-            <Link
-              to={`/anime/view/${row.original.animeId}/episodes/${row.original.episodeNumber}/edit`}
-            >
-              Edit
-            </Link>
-          </Button>
+      const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-          <Button size={"sm"} variant={"destructive"}>
-            Delete
-          </Button>
-        </div>
+      const navigate = useNavigate();
+      const handleDeleteClick = () => {
+        setShowDeleteDialog(true);
+      };
+
+      const handleConfirmDelete = async () => {
+        try {
+          await client.anime.deleteEpisode(
+            row.original.animeId,
+            row.original.episodeNumber,
+          );
+          console.log(row.original);
+        } catch (error) {
+          console.log(error);
+        }
+        setShowDeleteDialog(false);
+
+        navigate(`/anime/view/${row.original.animeId}`);
+      };
+
+      const handleCancelDelete = () => {
+        // Cancel the delete operation
+        setShowDeleteDialog(false);
+      };
+
+      // FIXME implement delete dialog
+      return (
+        <>
+          <div className={"flex gap-x-2"}>
+            <Button asChild size={"sm"}>
+              <Link
+                to={`/anime/view/${row.original.animeId}/episodes/${row.original.episodeNumber}/edit`}
+              >
+                Edit
+              </Link>
+            </Button>
+
+            <Button
+              size={"sm"}
+              variant={"destructive"}
+              onClick={handleDeleteClick}
+            >
+              Delete
+            </Button>
+          </div>
+          {showDeleteDialog && (
+            <DeleteDialog
+              onClose={handleCancelDelete}
+              onDelete={handleConfirmDelete}
+            />
+          )}
+        </>
       );
     },
   },
