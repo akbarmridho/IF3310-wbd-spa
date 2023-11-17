@@ -12,7 +12,7 @@ export function DeleteDialog({ onClose, onDelete }: DeleteDialogProps) {
         <p className="mb-4">Are you sure you want to delete this episode?</p>
         <div className="flex gap-2">
           <Button size="sm" onClick={onDelete} variant="destructive">
-            Confirm Delete
+            Delete
           </Button>
           <Button size="sm" onClick={onClose}>
             Cancel

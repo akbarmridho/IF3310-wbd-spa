@@ -36,6 +36,7 @@ const columns: ColumnDef<Episode>[] = [
       const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
       const navigate = useNavigate();
+
       const handleDeleteClick = () => {
         setShowDeleteDialog(true);
       };

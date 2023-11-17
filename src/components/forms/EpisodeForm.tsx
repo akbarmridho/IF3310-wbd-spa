@@ -17,8 +17,8 @@ import { isAxiosError } from "axios";
 import { ApiValidationError, ApiValidationSingleError } from "@/lib/Api.ts";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast.ts";
-import { Textarea } from "@/components/ui/textarea.tsx";
 import { client } from "@/lib/client.ts";
+import FileUpload from "@/components/FIleUpload.tsx";
 
 interface EpisodeNewFormProps extends React.HTMLAttributes<HTMLDivElement> {
   animeId: string;
@@ -27,14 +27,8 @@ interface EpisodeNewFormProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const formSchema = z.object({
   title: z.string().min(2).max(255),
-  episodeNumber: z.coerce.number().int().min(1),
+  episodeNumber: z.number().int().min(1),
   filename: z.string().min(2).max(255),
-  animeId: z
-    .string()
-    .regex(
-      new RegExp(/^[a-z0-9-]+$/),
-      "Id only could have lowercase and hypens",
-    ),
 });
 
 export interface Episode extends z.infer<typeof formSchema> {}
@@ -52,7 +46,11 @@ export function EpisodeForm({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: episode || { title: "", filename: "", episodeNumber: 0 },
+    defaultValues: episode || {
+      title: "",
+      filename: "",
+      episodeNumber: 1,
+    },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -70,7 +68,10 @@ export function EpisodeForm({
         });
       } else {
         // FIXME cannot create anime, issue: episodeNumber?
-        await client.anime.createEpisode(animeId, values);
+        await client.anime.createEpisode(animeId, {
+          animeId,
+          ...values,
+        });
 
         toast({
           description: "Episode Created",
@@ -106,6 +107,8 @@ export function EpisodeForm({
         console.log(e);
       }
     }
+
+    setIsLoading(false);
   }
 
   return (
@@ -116,19 +119,23 @@ export function EpisodeForm({
             <FormField
               control={form.control}
               name={"episodeNumber"}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Episode Number</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={"Episode Number"}
-                      type={"number"}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field: props }) => {
+                const { onChange, ...fields } = props;
+                return (
+                  <FormItem>
+                    <FormLabel>Episode Number</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={"Episode Number"}
+                        type={"number"}
+                        {...fields}
+                        onChange={(e) => onChange?.(+e.target.value)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
           )}
           <FormField
@@ -144,23 +151,35 @@ export function EpisodeForm({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name={"filename"}
-            render={({ field }) => (
-              <>
-                <FormItem>
-                  <FormLabel>Filename</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-                <p>TODO </p>
-                {/* TODO file upload */}
-              </>
-            )}
+          {
+            //  todo
+            // set submit button to disabled or make it state loading
+            // while file upload
+            // before submit check if filename is empty string, if empty,
+            // set field errror and dont allow to submit
+          }
+          <FileUpload
+            onSuccess={(val) => {
+              form.setValue("filename", val);
+            }}
           />
+          {/*<FormField*/}
+          {/*  control={form.control}*/}
+          {/*  name={"filename"}*/}
+          {/*  render={({ field }) => (*/}
+          {/*    <>*/}
+          {/*      <FormItem>*/}
+          {/*        <FormLabel>Filename</FormLabel>*/}
+          {/*        <FormControl>*/}
+          {/*          <Textarea {...field} />*/}
+          {/*        </FormControl>*/}
+          {/*        <FormMessage />*/}
+          {/*      </FormItem>*/}
+          {/*      <p>TODO </p>*/}
+          {/*      /!* TODO file upload *!/*/}
+          {/*    </>*/}
+          {/*  )}*/}
+          {/*/>*/}
 
           {fieldError && (
             <p className={"mt-2 text-red-600 text-sm"}>{fieldError}</p>
