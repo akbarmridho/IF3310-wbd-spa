@@ -6,6 +6,8 @@
 
 ## Run the container
 
+Creat `.env` file (example can be found in `.env.exampe`), then do
+
 `docker run -d -p 8080:8080 listwibuku-spa-service`
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
