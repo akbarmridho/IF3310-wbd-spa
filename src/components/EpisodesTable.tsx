@@ -65,7 +65,6 @@ const columns: ColumnDef<Episode>[] = [
         setShowDeleteDialog(false);
       };
 
-      // FIXME implement delete dialog
       return (
         <>
           <div className={"flex gap-x-2"}>
@@ -109,6 +108,8 @@ export function EpisodesTable({ id }: EpisodeTableProps) {
   useEffect(() => {
     refresh();
   }, []);
+
+  console.log(episodeData);
 
   return (
     <EpisodeRefresherContext.Provider value={{ refresh }}>

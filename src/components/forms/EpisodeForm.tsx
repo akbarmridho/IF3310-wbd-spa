@@ -67,7 +67,6 @@ export function EpisodeForm({
           description: "Episode updated",
         });
       } else {
-        // FIXME cannot create anime, issue: episodeNumber?
         await client.anime.createEpisode(animeId, {
           animeId,
           ...values,
@@ -163,23 +162,6 @@ export function EpisodeForm({
               form.setValue("filename", val);
             }}
           />
-          {/*<FormField*/}
-          {/*  control={form.control}*/}
-          {/*  name={"filename"}*/}
-          {/*  render={({ field }) => (*/}
-          {/*    <>*/}
-          {/*      <FormItem>*/}
-          {/*        <FormLabel>Filename</FormLabel>*/}
-          {/*        <FormControl>*/}
-          {/*          <Textarea {...field} />*/}
-          {/*        </FormControl>*/}
-          {/*        <FormMessage />*/}
-          {/*      </FormItem>*/}
-          {/*      <p>TODO </p>*/}
-          {/*      /!* TODO file upload *!/*/}
-          {/*    </>*/}
-          {/*  )}*/}
-          {/*/>*/}
 
           {fieldError && (
             <p className={"mt-2 text-red-600 text-sm"}>{fieldError}</p>
