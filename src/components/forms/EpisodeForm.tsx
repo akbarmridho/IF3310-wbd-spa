@@ -150,16 +150,14 @@ export function EpisodeForm({
               </FormItem>
             )}
           />
-          {
-            //  todo
-            // set submit button to disabled or make it state loading
-            // while file upload
-            // before submit check if filename is empty string, if empty,
-            // set field errror and dont allow to submit
-          }
           <FileUpload
             onSuccess={(val) => {
               form.setValue("filename", val);
+              setFieldError(val === "" ? "File failed to upload" : null);
+              setIsLoading(false);
+            }}
+            startSubmitting={() => {
+              setIsLoading(true);
             }}
           />
 
@@ -169,7 +167,7 @@ export function EpisodeForm({
           <Button
             variant={"default"}
             type={"submit"}
-            disabled={isLoading}
+            disabled={isLoading || fieldError !== null}
             className={"mt-6 w-full"}
           >
             Submit

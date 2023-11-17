@@ -5,9 +5,10 @@ import { API_BASE_URL } from "@/lib/client.ts";
 
 interface Props {
   onSuccess: (filename: string) => void;
+  startSubmitting: () => void;
 }
 
-export function FileUpload({ onSuccess }: Props) {
+export function FileUpload({ onSuccess, startSubmitting }: Props) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
@@ -70,6 +71,7 @@ export function FileUpload({ onSuccess }: Props) {
       }
     };
 
+    startSubmitting();
     uploadNextChunk();
   };
 
@@ -89,7 +91,13 @@ export function FileUpload({ onSuccess }: Props) {
           }
         }}
       />
-      <Button onClick={handleFileUpload} disabled={selectedFile === null}>
+      <Button
+        onClick={(event) => {
+          event.preventDefault();
+          handleFileUpload();
+        }}
+        disabled={selectedFile === null}
+      >
         Upload File
       </Button>
     </div>
