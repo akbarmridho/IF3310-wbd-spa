@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import { Progress } from "@/components/ui/progress.tsx";
+import { API_BASE_URL } from "@/lib/client.ts";
 
-const FileUpload = () => {
+interface Props {
+  onSuccess: (filename: string) => void;
+}
+
+export function FileUpload({ onSuccess }: Props) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
@@ -28,9 +33,10 @@ const FileUpload = () => {
         formData.append("totalChunks", String(totalChunks));
         formData.append("originalname", selectedFile.name);
 
-        fetch("http://localhost:8000/upload", {
+        fetch(`${API_BASE_URL}/file`, {
           method: "POST",
           body: formData,
+          credentials: "include",
         })
           .then((response) => response.json())
           .then((data) => {
@@ -44,6 +50,10 @@ const FileUpload = () => {
             chunkNumber++;
             start = end;
             end = start + chunkSize;
+
+            if (end > selectedFile.size) {
+              onSuccess(data.data.filename);
+            }
             uploadNextChunk();
           })
           .catch((error) => {
@@ -79,6 +89,6 @@ const FileUpload = () => {
       </Button>
     </div>
   );
-};
+}
 
 export default FileUpload;
