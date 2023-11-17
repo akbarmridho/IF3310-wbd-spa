@@ -29,7 +29,7 @@ export function AnimeList() {
 
   // split fetched data
   // const animeCount = bulkData.length;
-  const animePerPage = 5;
+  const animePerPage = 6;
   const [dataOfPage, setDataOfPage] = useState<AnimeData[]>(
     bulkData.slice(
       (pageNumber - 1) * animePerPage,
@@ -89,15 +89,17 @@ export function AnimeList() {
           <SelectItem value={"none"}>No Filter</SelectItem>
         </SelectContent>
       </Select>
-      {dataOfPage.length != 0 ? (
-        <>
-          {dataOfPage!.map((anime) => (
-            <AnimeListCard key={anime.id} data={anime} />
-          ))}
-        </>
-      ) : (
-        "No results"
-      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {dataOfPage.length != 0 ? (
+          <>
+            {dataOfPage!.map((anime) => (
+              <AnimeListCard key={anime.id} data={anime} />
+            ))}
+          </>
+        ) : (
+          "No results"
+        )}
+      </div>
       <div className="flex justify-center my-10">
         {dataOfPage.length != 0 ? (
           <nav

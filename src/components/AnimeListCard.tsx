@@ -18,22 +18,25 @@ export type AnimeCard = {
 
 const AnimeListCard: React.FC<AnimeCard> = ({ data }) => {
   return (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-3">
+    <div className="max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-auto m-3">
       <div className="md:flex">
         <div className="p-8">
-          <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+          <div className="uppercase tracking-wide text-sm font-bold">
             <Link to={`/anime/view/${data.id}`}>{data.title}</Link>
           </div>
           <p className="mt-2 text-gray-500">
-            Broadcast Information: {data.broadcastInformation}
+            Broadcast Information:{" "}
+            {data.broadcastInformation
+              ? data.broadcastInformation.substring(0, 47) + "..."
+              : "No information available                          "}
           </p>
           <p className="mt-2 text-gray-500">
-            Total Episodes: {data.totalEpisodes}
+            Total Episodes: {data.totalEpisodes || "N/A"}
           </p>
           <p className="mt-2 text-gray-500">
-            Aired Episodes: {data.airedEpisodes}
+            Aired Episodes: {data.airedEpisodes || "N/A"}
           </p>
-          <p className="mt-2 text-gray-500">Status: {data.status}</p>
+          <p className="mt-2 text-gray-500 capitalize">Status: {data.status}</p>
         </div>
       </div>
     </div>

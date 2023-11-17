@@ -82,18 +82,18 @@ export function AnimeView() {
         <div className={"col-span-4 md:col-span-1"}>
           <p>
             <span className={"font-semibold"}>Total Episodes: </span>
-            {animeData.totalEpisodes}
+            {animeData.totalEpisodes || "N/A"}
           </p>
           <p>
             <span className={"font-semibold"}>Aired Episodes: </span>
-            {animeData.airedEpisodes}
+            {animeData.airedEpisodes || "N/A"}
           </p>
-          <p>
+          <p className="capitalize">
             <span className={"font-semibold"}>Status: </span>
             {animeData.status}
           </p>
           <p className={"font-semibold"}>Broadcast Information: </p>
-          <p>{animeData.broadcastInformation}</p>
+          <p>{animeData.broadcastInformation || "No information available"}</p>
         </div>
         <div className={"col-span-4 md:col-span-3"}>
           <div className={"flex justify-end gap-x-2"}>
