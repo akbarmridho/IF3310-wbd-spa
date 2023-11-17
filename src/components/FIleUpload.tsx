@@ -22,7 +22,7 @@ export function FileUpload({ onSuccess }: Props) {
     const chunkProgress = 100 / totalChunks;
     let chunkNumber = 0;
     let start = 0;
-    let end = 0;
+    let end = chunkSize < selectedFile.size ? chunkSize : selectedFile.size;
 
     const uploadNextChunk = async () => {
       if (end <= selectedFile.size) {
@@ -47,14 +47,18 @@ export function FileUpload({ onSuccess }: Props) {
             setStatus(temp);
             setProgress(Number((chunkNumber + 1) * chunkProgress));
             console.log(temp);
-            chunkNumber++;
-            start = end;
-            end = start + chunkSize;
 
-            if (end > selectedFile.size) {
+            if (end == selectedFile.size) {
               onSuccess(data.data.filename);
+            } else {
+              chunkNumber++;
+              start = end;
+              end =
+                start + chunkSize > selectedFile.size
+                  ? selectedFile.size
+                  : start + chunkSize;
+              uploadNextChunk();
             }
-            uploadNextChunk();
           })
           .catch((error) => {
             console.error("Error uploading chunk:", error);
@@ -76,6 +80,7 @@ export function FileUpload({ onSuccess }: Props) {
       {progress > 0 && <Progress value={progress} />}
       <input
         type="file"
+        accept="video/mp4,video/x-m4v,video/*"
         onChange={(event) => {
           const files = event.target.files;
 
