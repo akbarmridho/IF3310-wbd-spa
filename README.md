@@ -1,4 +1,6 @@
-# React + TypeScript + Vite
+# ListWibuKu - Wibu Watch
+
+React + TypeScript + Vite
 
 ## Build
 
@@ -28,3 +30,46 @@ If you are developing a production application, we recommend updating the config
 - Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and
   add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+
+## End Result
+
+### Summary
+
+This app is used for ListWibuKu service administration. Operations include creating and modifying users, CRUD on anime, CRUD on episodes, and uploading stream files.
+
+### Features and Screens
+
+Login
+![login](img/image.png)
+
+Register
+![register](img/image-1.png)
+
+Change Password
+![change password](img/image-11.png)
+
+Homepage
+![homepage](img/image-2.png)
+![homepage with filter](img/image-3.png)
+
+CRUD Anime
+![create anime](img/image-4.png)
+![read anime](img/image-7.png)
+![update anime](img/image-5.png)
+![delete anime](img/image-6.png)
+
+CRUD Anime Episode
+![create episode](img/image-8.png)
+![update episode](img/image-9.png)
+![delete episode](img/image-10.png)
+
+### Contributions
+
+Note: tasks below include client side and server side setups
+| Task | NIM |
+|--------------------------|----------|
+| File upload | 13521093 |
+| Authentication | 13521093 |
+| Homepage and list filter | 13521074 |
+| Episode CRUD | 13521074 |
+| Anime CRUD | 13521093 |
