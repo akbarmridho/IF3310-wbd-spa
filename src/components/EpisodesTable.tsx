@@ -1,10 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { EpisodeDataTable } from "@/components/EpisodeDataTable.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { client } from "@/lib/client";
 import { DeleteDialog } from "./DeleteDialog";
+import {
+  EpisodeRefresherContext,
+  useEpisodeRefresher,
+} from "@/hooks/animeEpisode.ts";
 
 interface EpisodeTableProps {
   id: string;
@@ -35,7 +39,7 @@ const columns: ColumnDef<Episode>[] = [
     cell: ({ row }) => {
       const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-      const navigate = useNavigate();
+      const refresher = useEpisodeRefresher();
 
       const handleDeleteClick = () => {
         setShowDeleteDialog(true);
@@ -53,7 +57,7 @@ const columns: ColumnDef<Episode>[] = [
         }
         setShowDeleteDialog(false);
 
-        navigate(`/anime/view/${row.original.animeId}`);
+        refresher.refresh();
       };
 
       const handleCancelDelete = () => {
@@ -96,11 +100,19 @@ const columns: ColumnDef<Episode>[] = [
 export function EpisodesTable({ id }: EpisodeTableProps) {
   const [episodeData, setEpisodeData] = useState<Episode[]>([]);
 
-  useEffect(() => {
+  const refresh = () => {
     client.anime.getAllEpisodes(id).then((response) => {
       setEpisodeData(response.data.data);
     });
+  };
+
+  useEffect(() => {
+    refresh();
   }, []);
 
-  return <EpisodeDataTable columns={columns} data={episodeData} />;
+  return (
+    <EpisodeRefresherContext.Provider value={{ refresh }}>
+      <EpisodeDataTable columns={columns} data={episodeData} />
+    </EpisodeRefresherContext.Provider>
+  );
 }
