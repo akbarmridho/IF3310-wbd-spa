@@ -38,17 +38,17 @@ export function AnimeList() {
   );
 
   // handlers for pagination buttons
-  const handlePrev = () => {
+  const handleGoToFirst = () => {
     if (pageNumber == 1) {
       return;
     }
-    setPageNumber(pageNumber - 1);
+    setPageNumber(1);
   };
-  const handleNext = () => {
+  const handleGoToLast = () => {
     if (pageNumber == Math.ceil(animeCount / animePerPage)) {
       return;
     }
-    setPageNumber(pageNumber + 1);
+    setPageNumber(Math.ceil(animeCount / animePerPage));
   };
 
   useEffect(() => {
@@ -104,7 +104,11 @@ export function AnimeList() {
             className="inline-flex rounded-md shadow-sm"
             aria-label="Pagination"
           >
-            <Button key={"prev"} variant={"secondary"} onClick={handlePrev}>
+            <Button
+              key={"prev"}
+              variant={"secondary"}
+              onClick={handleGoToFirst}
+            >
               <span className="sr-only">Previous</span>
               <ArrowLeft className="h-5 w-5" aria-hidden="true" />
             </Button>
@@ -113,18 +117,28 @@ export function AnimeList() {
             {Array.from(
               { length: Math.ceil(animeCount / animePerPage) },
               (_, index) => (
-                // TODO handle many pagination
-                <Button
-                  key={index + 1}
-                  onClick={() => {
-                    setPageNumber(index + 1);
-                  }}
-                >
-                  {index + 1}
-                </Button>
+                <>
+                  {Math.abs(pageNumber - (index + 1)) <= 2 ||
+                  // check for start or end page
+                  (Math.abs(1 - (index + 1)) <= 4 && pageNumber <= 2) ||
+                  (Math.abs(
+                    Math.ceil(animeCount / animePerPage) - (index + 1),
+                  ) <= 4 &&
+                    pageNumber >= Math.ceil(animeCount / animePerPage) - 1) ? (
+                    <Button
+                      key={index + 1}
+                      onClick={() => {
+                        setPageNumber(index + 1);
+                      }}
+                      variant={pageNumber == index + 1 ? "default" : "ghost"}
+                    >
+                      {index + 1}
+                    </Button>
+                  ) : null}
+                </>
               ),
             )}
-            <Button key={"next"} variant={"secondary"} onClick={handleNext}>
+            <Button key={"next"} variant={"secondary"} onClick={handleGoToLast}>
               <span className="sr-only">Previous</span>
               <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </Button>
